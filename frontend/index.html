@@ -1,0 +1,1042 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MenuPrice — Competitive Pricing for UberEATS Colombo</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;0,800;1,400;1,600&family=Lato:wght@300;400;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --black:   #0d0b09;
+    --white:   #f5f0e8;
+    --accent:  #e8461e;
+    --accent2: #c9892a;
+    --muted:   #2a2520;
+    --border:  #1e1a16;
+    --card:    #111009;
+    --success: #4caf7d;
+    --warn:    #e6a817;
+    --text-dim: #7a7065;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--black);
+    color: var(--white);
+    font-family: 'Lato', sans-serif;
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* ── GRAIN TEXTURE OVERLAY ── */
+  body::after {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.03'/%3E%3C/svg%3E");
+    pointer-events: none;
+    z-index: 100;
+    opacity: 0.4;
+  }
+
+  /* ── BACKGROUND GLOW ── */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background:
+      radial-gradient(ellipse 70% 50% at 15% 0%, rgba(232,70,30,0.07) 0%, transparent 60%),
+      radial-gradient(ellipse 50% 40% at 85% 90%, rgba(201,137,42,0.05) 0%, transparent 60%);
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  /* ── HEADER ── */
+  header {
+    position: relative;
+    z-index: 10;
+    padding: 1.5rem 4rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .logo {
+    font-family: 'Playfair Display', serif;
+    font-weight: 700;
+    font-size: 1.5rem;
+    letter-spacing: -0.01em;
+    font-style: italic;
+  }
+
+  .logo span { color: var(--accent); font-style: normal; }
+
+  .header-right {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+  }
+
+  .badge {
+    font-size: 0.68rem;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: #555;
+    border: 1px solid #1e1e1e;
+    padding: 0.3rem 0.9rem;
+    border-radius: 2rem;
+  }
+
+  /* ── FOOD STRIP ── */
+  .food-strip {
+    position: relative;
+    z-index: 10;
+    display: flex;
+    gap: 0;
+    overflow: hidden;
+    border-bottom: 1px solid var(--border);
+    background: #0a0806;
+  }
+
+  .food-strip-item {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 0.8rem 0.5rem;
+    border-right: 1px solid var(--border);
+    gap: 0.3rem;
+    opacity: 0;
+    transform: translateY(8px);
+    animation: fadeUp 0.4s ease forwards;
+  }
+
+  .food-strip-item:last-child { border-right: none; }
+
+  .food-strip-item:nth-child(1) { animation-delay: 0.05s; }
+  .food-strip-item:nth-child(2) { animation-delay: 0.1s; }
+  .food-strip-item:nth-child(3) { animation-delay: 0.15s; }
+  .food-strip-item:nth-child(4) { animation-delay: 0.2s; }
+  .food-strip-item:nth-child(5) { animation-delay: 0.25s; }
+  .food-strip-item:nth-child(6) { animation-delay: 0.3s; }
+  .food-strip-item:nth-child(7) { animation-delay: 0.35s; }
+  .food-strip-item:nth-child(8) { animation-delay: 0.4s; }
+
+  .food-emoji { font-size: 1.4rem; line-height: 1; }
+
+  .food-label {
+    font-size: 0.6rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: #3a3530;
+  }
+
+  @keyframes fadeUp {
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  /* ── HERO ── */
+  .hero {
+    position: relative;
+    z-index: 10;
+    padding: 4rem 4rem 2.5rem;
+    display: grid;
+    grid-template-columns: 1fr auto;
+    align-items: end;
+    gap: 3rem;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .hero-left {}
+
+  .hero-tag {
+    font-size: 0.68rem;
+    font-weight: 700;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 1.2rem;
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+  }
+
+  .hero-tag::before {
+    content: '';
+    width: 2.5rem;
+    height: 1px;
+    background: var(--accent);
+  }
+
+  h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(2.8rem, 5vw, 4.2rem);
+    font-weight: 800;
+    line-height: 1.08;
+    letter-spacing: -0.02em;
+    margin-bottom: 1.2rem;
+  }
+
+  h1 em {
+    font-style: italic;
+    color: var(--accent);
+  }
+
+  .hero p {
+    font-size: 0.95rem;
+    line-height: 1.75;
+    color: var(--text-dim);
+    font-weight: 300;
+    max-width: 480px;
+  }
+
+  /* Hero stats */
+  .hero-stats {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+    padding-bottom: 0.5rem;
+  }
+
+  .hero-stat {
+    text-align: right;
+  }
+
+  .hero-stat-value {
+    font-family: 'Playfair Display', serif;
+    font-size: 2rem;
+    font-weight: 700;
+    color: var(--white);
+    line-height: 1;
+  }
+
+  .hero-stat-label {
+    font-size: 0.68rem;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: #333;
+    margin-top: 0.2rem;
+  }
+
+  /* ── MAIN LAYOUT ── */
+  .main {
+    position: relative;
+    z-index: 10;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0;
+    min-height: 600px;
+  }
+
+  /* ── FORM PANEL ── */
+  .form-panel {
+    border-right: 1px solid var(--border);
+    padding: 2.5rem 3rem;
+  }
+
+  .panel-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 0.75rem;
+    font-weight: 400;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: #3a3530;
+    margin-bottom: 2rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+  }
+
+  .field { margin-bottom: 1.4rem; }
+
+  .field-label {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: #5a5248;
+    margin-bottom: 0.5rem;
+  }
+
+  .field-icon { font-size: 0.9rem; }
+
+  select, input[type="number"] {
+    width: 100%;
+    background: #0a0806;
+    border: 1px solid #1a1612;
+    border-radius: 0.4rem;
+    color: var(--white);
+    font-family: 'Lato', sans-serif;
+    font-size: 0.92rem;
+    font-weight: 300;
+    padding: 0.75rem 1rem;
+    appearance: none;
+    transition: border-color 0.2s, background 0.2s;
+    cursor: pointer;
+  }
+
+  select:focus, input[type="number"]:focus {
+    outline: none;
+    border-color: var(--accent);
+    background: #0f0c09;
+  }
+
+  .select-wrap { position: relative; }
+
+  .select-wrap::after {
+    content: '↓';
+    position: absolute;
+    right: 1rem;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #3a3530;
+    pointer-events: none;
+    font-size: 0.75rem;
+  }
+
+  .field-hint {
+    font-size: 0.7rem;
+    color: #3a3530;
+    margin-top: 0.35rem;
+    font-style: italic;
+    font-weight: 300;
+  }
+
+  /* Rating group */
+  .rating-group { display: flex; gap: 0.5rem; align-items: center; }
+  .rating-group input[type="number"] { flex: 1; }
+
+  .new-restaurant-btn {
+    background: transparent;
+    border: 1px solid #1a1612;
+    color: #5a5248;
+    font-family: 'Lato', sans-serif;
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    padding: 0.75rem 0.9rem;
+    border-radius: 0.4rem;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: all 0.2s;
+    text-transform: uppercase;
+  }
+
+  .new-restaurant-btn.active {
+    background: rgba(232,70,30,0.1);
+    border-color: var(--accent);
+    color: var(--accent);
+  }
+
+  /* Submit */
+  .submit-btn {
+    width: 100%;
+    background: var(--accent);
+    color: white;
+    border: none;
+    border-radius: 0.4rem;
+    font-family: 'Playfair Display', serif;
+    font-size: 1rem;
+    font-weight: 600;
+    font-style: italic;
+    letter-spacing: 0.02em;
+    padding: 1rem;
+    cursor: pointer;
+    margin-top: 0.5rem;
+    transition: all 0.2s;
+  }
+
+  .submit-btn:hover {
+    background: #d03a14;
+    transform: translateY(-1px);
+    box-shadow: 0 8px 24px rgba(232,70,30,0.25);
+  }
+
+  .submit-btn:active { transform: translateY(0); }
+  .submit-btn:disabled { opacity: 0.4; cursor: not-allowed; transform: none; box-shadow: none; }
+
+  /* Error */
+  .error-msg {
+    background: rgba(232,70,30,0.07);
+    border: 1px solid rgba(232,70,30,0.2);
+    border-radius: 0.4rem;
+    padding: 0.7rem 1rem;
+    font-size: 0.8rem;
+    color: var(--accent);
+    margin-top: 0.8rem;
+    display: none;
+    font-weight: 300;
+  }
+  .error-msg.visible { display: block; }
+
+  /* ── RESULTS PANEL ── */
+  .results-panel {
+    padding: 2.5rem 3rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  .panel-title-right {
+    font-family: 'Playfair Display', serif;
+    font-size: 0.75rem;
+    font-weight: 400;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: #3a3530;
+    margin-bottom: 2rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+  }
+
+  /* Empty state */
+  .empty-state {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 3rem 2rem;
+    gap: 1.5rem;
+  }
+
+  .empty-icons {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 0.8rem;
+    opacity: 0.15;
+  }
+
+  .empty-icon-item {
+    width: 48px;
+    height: 48px;
+    background: #1a1612;
+    border-radius: 0.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.4rem;
+  }
+
+  .empty-text {
+    font-size: 0.82rem;
+    color: #3a3530;
+    line-height: 1.7;
+    font-weight: 300;
+    max-width: 280px;
+  }
+
+  /* Result cards */
+  .result-card {
+    background: #0a0806;
+    border: 1px solid var(--border);
+    border-radius: 0.6rem;
+    padding: 1.5rem 2rem;
+    opacity: 0;
+    transform: translateY(10px);
+    transition: opacity 0.4s ease, transform 0.4s ease;
+  }
+
+  .result-card.visible { opacity: 1; transform: translateY(0); }
+
+  /* Price card */
+  .price-card {
+    border-color: rgba(232,70,30,0.3);
+    background: linear-gradient(135deg, #120d09 0%, #1a0f08 100%);
+    text-align: center;
+    padding: 2rem;
+  }
+
+  .price-label {
+    font-size: 0.65rem;
+    font-weight: 700;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 0.8rem;
+  }
+
+  .price-value {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(3rem, 6vw, 4.5rem);
+    font-weight: 800;
+    letter-spacing: -0.02em;
+    line-height: 1;
+    margin-bottom: 0.3rem;
+  }
+
+  .price-currency {
+    font-size: 1.3rem;
+    color: #7a6a5a;
+    font-weight: 400;
+    vertical-align: super;
+    margin-right: 0.15rem;
+    font-style: italic;
+  }
+
+  .price-context {
+    font-size: 0.78rem;
+    color: #5a4a3a;
+    margin-top: 0.6rem;
+    font-weight: 300;
+  }
+
+  .confidence-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    font-size: 0.65rem;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    padding: 0.3rem 0.9rem;
+    border-radius: 2rem;
+    margin-top: 0.8rem;
+  }
+
+  .confidence-badge.High   { background: rgba(76,175,125,0.12); color: var(--success); border: 1px solid rgba(76,175,125,0.25); }
+  .confidence-badge.Medium { background: rgba(230,168,23,0.12);  color: var(--warn);    border: 1px solid rgba(230,168,23,0.25); }
+  .confidence-badge.Low    { background: rgba(232,70,30,0.12);   color: var(--accent);  border: 1px solid rgba(232,70,30,0.25); }
+
+  .confidence-dot { width: 5px; height: 5px; border-radius: 50%; background: currentColor; }
+
+  /* Stats card */
+  .stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1.2rem 1.5rem; }
+
+  .stat-label {
+    font-size: 0.65rem;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: #3a3530;
+    margin-bottom: 0.3rem;
+  }
+
+  .stat-value {
+    font-family: 'Playfair Display', serif;
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--white);
+  }
+
+  /* Positioning */
+  .positioning-section { margin-top: 1.2rem; padding-top: 1.2rem; border-top: 1px solid var(--border); }
+
+  .positioning-bar {
+    height: 3px;
+    background: #1a1612;
+    border-radius: 2px;
+    position: relative;
+    margin: 0.5rem 0 0.5rem;
+  }
+
+  .positioning-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--accent2), var(--accent));
+    border-radius: 2px;
+    transition: width 1s cubic-bezier(0.4,0,0.2,1);
+  }
+
+  .positioning-marker {
+    position: absolute;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    width: 10px; height: 10px;
+    background: var(--accent);
+    border-radius: 50%;
+    border: 2px solid var(--black);
+    box-shadow: 0 0 8px rgba(232,70,30,0.5);
+  }
+
+  .positioning-text {
+    font-size: 0.78rem;
+    color: #5a5248;
+    line-height: 1.6;
+    font-weight: 300;
+  }
+
+  /* Advisory card */
+  .advisory-card {
+    border-color: rgba(201,137,42,0.2);
+    background: rgba(201,137,42,0.04);
+    display: flex;
+    gap: 1rem;
+    align-items: flex-start;
+  }
+
+  .advisory-icon {
+    font-size: 1.5rem;
+    flex-shrink: 0;
+    margin-top: 0.1rem;
+  }
+
+  .advisory-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--accent2);
+    margin-bottom: 0.4rem;
+  }
+
+  .advisory-text {
+    font-size: 0.8rem;
+    color: #6a5a4a;
+    line-height: 1.65;
+    font-weight: 300;
+  }
+
+  /* ── COLOMBO DISTRICTS RIBBON ── */
+  .districts-ribbon {
+    position: relative;
+    z-index: 10;
+    border-top: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+    padding: 0.7rem 4rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    overflow: hidden;
+    background: #0a0806;
+  }
+
+  .ribbon-label {
+    font-size: 0.62rem;
+    font-weight: 700;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: #2a2520;
+    white-space: nowrap;
+    margin-right: 0.5rem;
+  }
+
+  .ribbon-items {
+    display: flex;
+    gap: 0.4rem;
+    flex-wrap: wrap;
+  }
+
+  .ribbon-item {
+    font-size: 0.65rem;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    color: #2a2520;
+    background: #0f0c09;
+    border: 1px solid #1a1612;
+    padding: 0.2rem 0.6rem;
+    border-radius: 2rem;
+    white-space: nowrap;
+  }
+
+  /* ── FOOTER ── */
+  footer {
+    position: relative;
+    z-index: 10;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 1.5rem 4rem;
+    border-top: 1px solid var(--border);
+  }
+
+  .footer-left {
+    font-family: 'Playfair Display', serif;
+    font-size: 0.85rem;
+    font-style: italic;
+    color: #2a2520;
+  }
+
+  .footer-right {
+    font-size: 0.65rem;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: #2a2520;
+  }
+
+  /* ── RESPONSIVE ── */
+  @media (max-width: 900px) {
+    header, .hero, .districts-ribbon, footer { padding-left: 1.5rem; padding-right: 1.5rem; }
+    .hero { grid-template-columns: 1fr; }
+    .hero-stats { flex-direction: row; justify-content: flex-start; }
+    .hero-stat { text-align: left; }
+    .main { grid-template-columns: 1fr; }
+    .form-panel, .results-panel { padding: 2rem 1.5rem; }
+    .form-panel { border-right: none; border-bottom: 1px solid var(--border); }
+    .food-strip { display: none; }
+  }
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<header>
+  <div class="logo"><em>Menu</em><span>Price</span></div>
+  <div class="header-right">
+    <div class="badge">UberEATS Colombo · ML Powered</div>
+  </div>
+</header>
+
+<!-- FOOD CATEGORY STRIP -->
+<div class="food-strip">
+  <div class="food-strip-item"><div class="food-emoji">🍛</div><div class="food-label">Rice & Curry</div></div>
+  <div class="food-strip-item"><div class="food-emoji">🥘</div><div class="food-label">Kottu</div></div>
+  <div class="food-strip-item"><div class="food-emoji">🍔</div><div class="food-label">Burgers</div></div>
+  <div class="food-strip-item"><div class="food-emoji">🦐</div><div class="food-label">Seafood</div></div>
+  <div class="food-strip-item"><div class="food-emoji">🍕</div><div class="food-label">Pizza</div></div>
+  <div class="food-strip-item"><div class="food-emoji">🍜</div><div class="food-label">Noodles</div></div>
+  <div class="food-strip-item"><div class="food-emoji">🍱</div><div class="food-label">Set Meals</div></div>
+  <div class="food-strip-item"><div class="food-emoji">🧁</div><div class="food-label">Desserts</div></div>
+</div>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-left">
+    <div class="hero-tag">Competitive Intelligence · Colombo</div>
+    <h1>Price your dishes with<br><em>market precision</em></h1>
+    <p>ML-powered pricing recommendations for UberEATS Colombo restaurants — trained on real competitor data across all 15 districts and 19 dish categories.</p>
+  </div>
+  <div class="hero-stats">
+    <div class="hero-stat">
+      <div class="hero-stat-value">310</div>
+      <div class="hero-stat-label">Restaurants</div>
+    </div>
+    <div class="hero-stat">
+      <div class="hero-stat-value">21,372</div>
+      <div class="hero-stat-label">Dishes Analysed</div>
+    </div>
+    <div class="hero-stat">
+      <div class="hero-stat-value">15</div>
+      <div class="hero-stat-label">Districts</div>
+    </div>
+  </div>
+</div>
+
+<!-- DISTRICTS RIBBON -->
+<div class="districts-ribbon">
+  <div class="ribbon-label">Coverage</div>
+  <div class="ribbon-items">
+    <div class="ribbon-item">Colombo 1</div>
+    <div class="ribbon-item">Colombo 2</div>
+    <div class="ribbon-item">Colombo 3</div>
+    <div class="ribbon-item">Colombo 4</div>
+    <div class="ribbon-item">Colombo 5</div>
+    <div class="ribbon-item">Colombo 6</div>
+    <div class="ribbon-item">Colombo 7</div>
+    <div class="ribbon-item">Colombo 8</div>
+    <div class="ribbon-item">Colombo 9</div>
+    <div class="ribbon-item">Colombo 10</div>
+    <div class="ribbon-item">Colombo 11</div>
+    <div class="ribbon-item">Colombo 12</div>
+    <div class="ribbon-item">Colombo 13</div>
+    <div class="ribbon-item">Colombo 14</div>
+    <div class="ribbon-item">Colombo 15</div>
+  </div>
+</div>
+
+<!-- MAIN -->
+<div class="main">
+
+  <!-- FORM PANEL -->
+  <div class="form-panel">
+    <div class="panel-title">🍽️ &nbsp;Restaurant Details</div>
+
+    <div class="field">
+      <div class="field-label"><span class="field-icon">⭐</span> Restaurant Tier</div>
+      <div class="select-wrap">
+        <select id="tier">
+          <option value="">Select tier</option>
+          <option value="Budget">Budget</option>
+          <option value="Mid-Range">Mid-Range</option>
+          <option value="Fine Dining">Fine Dining</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="field">
+      <div class="field-label"><span class="field-icon">📍</span> Area</div>
+      <div class="select-wrap">
+        <select id="area">
+          <option value="">Select area</option>
+          <option>Colombo 1</option><option>Colombo 2</option>
+          <option>Colombo 3</option><option>Colombo 4</option>
+          <option>Colombo 5</option><option>Colombo 6</option>
+          <option>Colombo 7</option><option>Colombo 8</option>
+          <option>Colombo 9</option><option>Colombo 10</option>
+          <option>Colombo 11</option><option>Colombo 12</option>
+          <option>Colombo 13</option><option>Colombo 14</option>
+          <option>Colombo 15</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="field">
+      <div class="field-label"><span class="field-icon">🍴</span> Cuisine Type</div>
+      <div class="select-wrap">
+        <select id="cuisine">
+          <option value="">Select cuisine</option>
+          <option>American</option>
+          <option>Cafe / Bakery</option>
+          <option>Chinese</option>
+          <option>Indian</option>
+          <option>Italian</option>
+          <option>Japanese</option>
+          <option>Korean</option>
+          <option>Middle Eastern</option>
+          <option>Other</option>
+          <option>Sri Lankan</option>
+          <option>Thai</option>
+        </select>
+      </div>
+      <div class="field-hint">Can't find your cuisine? Select "Other"</div>
+    </div>
+
+    <div class="field">
+      <div class="field-label"><span class="field-icon">🥗</span> Dish Category</div>
+      <div class="select-wrap">
+        <select id="category">
+          <option value="">Select category</option>
+          <option>Appetizer / Sides / Salads</option>
+          <option>Bakery / Breads / Pastries</option>
+          <option>Beverage</option>
+          <option>Biriyani</option>
+          <option>Breakfast / Traditional</option>
+          <option>Burger / Sandwich / Wrap</option>
+          <option>Dessert / Bakery / Sweets</option>
+          <option>Fried Chicken</option>
+          <option>Fried Rice</option>
+          <option>Japanese / Sushi</option>
+          <option>Kottu / Roti / Indian Breads</option>
+          <option>Meat & Veg Curries / Stir-fry / Grill</option>
+          <option>Noodles / Pasta</option>
+          <option>Nuts / Dried Fruits</option>
+          <option>Pizza</option>
+          <option>Rice & Curry</option>
+          <option>Seafood</option>
+          <option>Set Meal / Combo</option>
+          <option>Soup / Stew</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="field">
+      <div class="field-label"><span class="field-icon">⭐</span> Restaurant Rating</div>
+      <div class="rating-group">
+        <input type="number" id="rating" min="1" max="5" step="0.1" placeholder="e.g. 4.2" />
+        <button class="new-restaurant-btn" id="newRestBtn" onclick="toggleNewRest()">New Restaurant</button>
+      </div>
+      <div class="field-hint">Rate 1.0–5.0 · Toggle "New Restaurant" if you have no rating yet</div>
+    </div>
+
+    <div class="error-msg" id="errorMsg"></div>
+
+    <button class="submit-btn" id="submitBtn" onclick="getRecommendation()">
+      Get Price Recommendation →
+    </button>
+  </div>
+
+  <!-- RESULTS PANEL -->
+  <div class="results-panel" id="resultsPanel">
+    <div class="panel-title-right">📊 &nbsp;Recommendation</div>
+    <div class="empty-state" id="emptyState">
+      <div class="empty-icons">
+        <div class="empty-icon-item">🍛</div>
+        <div class="empty-icon-item">🦐</div>
+        <div class="empty-icon-item">🍕</div>
+        <div class="empty-icon-item">🥘</div>
+        <div class="empty-icon-item">🍜</div>
+        <div class="empty-icon-item">🍔</div>
+        <div class="empty-icon-item">🧁</div>
+        <div class="empty-icon-item">🍱</div>
+      </div>
+      <div class="empty-text">Fill in your restaurant details and click Get Price Recommendation to see your market-aligned pricing.</div>
+    </div>
+  </div>
+
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-left">MenuPrice — Intelligent Competitive Pricing</div>
+  <div class="footer-right">BSc Data Science · NSBM Green University · UberEATS Colombo</div>
+</footer>
+
+<script>
+  const API = 'http://localhost:8000';
+  let isNewRestaurant = false;
+
+  function toggleNewRest() {
+    isNewRestaurant = !isNewRestaurant;
+    const btn   = document.getElementById('newRestBtn');
+    const input = document.getElementById('rating');
+    btn.classList.toggle('active', isNewRestaurant);
+    input.disabled    = isNewRestaurant;
+    input.value       = '';
+    input.placeholder = isNewRestaurant ? 'No rating (new restaurant)' : 'e.g. 4.2';
+  }
+
+  function showError(msg) {
+    const el = document.getElementById('errorMsg');
+    el.textContent = msg;
+    el.classList.add('visible');
+  }
+
+  function clearError() {
+    document.getElementById('errorMsg').classList.remove('visible');
+  }
+
+  async function getRecommendation() {
+    clearError();
+
+    const tier     = document.getElementById('tier').value;
+    const area     = document.getElementById('area').value;
+    const cuisine  = document.getElementById('cuisine').value;
+    const category = document.getElementById('category').value;
+    const ratingRaw = document.getElementById('rating').value;
+
+    if (!tier || !area || !cuisine || !category) {
+      showError('Please fill in all fields before getting a recommendation.');
+      return;
+    }
+
+    if (!isNewRestaurant && (!ratingRaw || isNaN(parseFloat(ratingRaw)))) {
+      showError('Please enter a valid restaurant rating between 1.0 and 5.0, or toggle New Restaurant.');
+      return;
+    }
+
+    const rating = isNewRestaurant ? null : parseFloat(ratingRaw);
+
+    const btn = document.getElementById('submitBtn');
+    btn.disabled = true;
+    btn.textContent = 'Calculating...';
+
+    try {
+      const res = await fetch(`${API}/recommend`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          restaurant_tier:   tier,
+          area:              area,
+          cuisine_type:      cuisine,
+          dish_category:     category,
+          restaurant_rating: rating,
+        })
+      });
+
+      if (!res.ok) {
+        const err = await res.json();
+        throw new Error(err.detail || 'Something went wrong.');
+      }
+
+      const data = await res.json();
+      renderResults(data);
+
+    } catch (err) {
+      showError(err.message || 'Could not connect to the pricing server. Make sure the backend is running.');
+    } finally {
+      btn.disabled = false;
+      btn.textContent = 'Get Price Recommendation →';
+    }
+  }
+
+  function renderResults(d) {
+    const panel = document.getElementById('resultsPanel');
+
+    // Remove empty state and old results but keep panel title
+    const title = panel.querySelector('.panel-title-right');
+    panel.innerHTML = '';
+    panel.appendChild(title);
+
+    // Price card
+    const priceCard = document.createElement('div');
+    priceCard.className = 'result-card price-card';
+    priceCard.innerHTML = `
+      <div class="price-label">Recommended Price</div>
+      <div class="price-value">
+        <span class="price-currency">Rs.</span>${d.recommended_price.toLocaleString()}
+      </div>
+      <div class="price-context">${d.tier} · ${d.dish_category} · ${d.area}</div>
+      <div class="confidence-badge ${d.confidence_level}">
+        <span class="confidence-dot"></span>
+        ${d.confidence_level} Confidence
+      </div>
+    `;
+    panel.appendChild(priceCard);
+
+    // Stats card
+    const statsCard = document.createElement('div');
+    statsCard.className = 'result-card';
+    statsCard.innerHTML = `
+      <div class="stats-grid">
+        <div>
+          <div class="stat-label">Competitor Range</div>
+          <div class="stat-value">Rs.${d.competitor_range_low.toLocaleString()} – Rs.${d.competitor_range_high.toLocaleString()}</div>
+        </div>
+        <div>
+          <div class="stat-label">Based On</div>
+          <div class="stat-value">${d.competitor_count.toLocaleString()} dishes</div>
+        </div>
+      </div>
+      <div class="positioning-section">
+        <div class="stat-label">Market Positioning</div>
+        <div class="positioning-bar">
+          <div class="positioning-fill" style="width:0%" id="posBar"></div>
+          <div class="positioning-marker" id="posMarker" style="left:0%"></div>
+        </div>
+        <div class="positioning-text">
+          This price places you at the <strong>${d.positioning_percentile}th percentile</strong>
+          of ${d.tier} ${d.dish_category} competitors in ${d.area}.
+        </div>
+      </div>
+    `;
+    panel.appendChild(statsCard);
+
+    // Advisory
+    if (d.new_entrant_advisory) {
+      const advisoryCard = document.createElement('div');
+      advisoryCard.className = 'result-card advisory-card';
+      advisoryCard.innerHTML = `
+        <div class="advisory-icon">💡</div>
+        <div>
+          <div class="advisory-title">New Restaurant Advisory</div>
+          <div class="advisory-text">
+            Consider starting around <strong>Rs.${d.competitor_range_low.toLocaleString()}</strong>
+            as you build your platform history and accumulate reviews.
+            You can revisit your pricing once your rating is established.
+          </div>
+        </div>
+      `;
+      panel.appendChild(advisoryCard);
+    }
+
+    // Animate cards in
+    setTimeout(() => {
+      panel.querySelectorAll('.result-card').forEach((card, i) => {
+        setTimeout(() => card.classList.add('visible'), i * 120);
+      });
+      // Animate positioning bar
+      setTimeout(() => {
+        const bar    = document.getElementById('posBar');
+        const marker = document.getElementById('posMarker');
+        if (bar)    bar.style.width  = `${d.positioning_percentile}%`;
+        if (marker) marker.style.left = `${d.positioning_percentile}%`;
+      }, 400);
+    }, 50);
+  }
+</script>
+</body>
+</html>
